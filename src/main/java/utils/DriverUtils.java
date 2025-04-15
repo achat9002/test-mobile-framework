@@ -1,7 +1,11 @@
 package utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -13,6 +17,23 @@ public class DriverUtils {
 
 	private AppiumDriver driver;
 
+	private String getAppPath() {
+	 Properties prop=null;
+	try {
+		prop = new Properties();
+		 FileInputStream fis = new FileInputStream("config.properties");
+		 prop.load(fis);
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+	 return prop.getProperty("appPath");
+ }
+
 	public DriverUtils initializeDriver() {
 		// Fetch platform from VM arguments. Default is Android.
 		String platform = System.getProperty("platform", "Android");
@@ -23,7 +44,7 @@ public class DriverUtils {
 				capabilities.setCapability("platformName", "Android");
 				capabilities.setCapability("deviceName", "emulator-5554");
 				capabilities.setCapability("automationName", "UiAutomator2");
-				capabilities.setCapability("app", System.getProperty("user.dir") + "/app/latest.apk");
+				capabilities.setCapability("app", getAppPath());
 
 				// Initialize Android driver and set it to ThreadLocal
 				driver = new AndroidDriver(new URL("http://127.0.0.1:4725/wd/hub"), capabilities);
